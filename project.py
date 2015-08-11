@@ -19,6 +19,7 @@ for i in _list:
             sh.move(_path + '/' + i , _path + '/' +i[len(name)+1:len(i)] )
 
         else:
+            os.mkdir(_path+'/'+i[len(name)+1:len(i)])
             sh.move(_path + '/' + i , _path + '/' +i[len(name)+1:len(i)] )
  
             
