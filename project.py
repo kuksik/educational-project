@@ -1,28 +1,27 @@
 import os
-import shutil as sh
 
 
+a='/Users/K/Documents/pr.directory'
 
-_path='/Users/K/Documents/pr.directory'
-
-
-_list=os.listdir(path=_path)
-
-_list.remove('.DS_Store') 
+def sort(path):
+    
+    m=os.walk(path)
 
 
+    k=[d for d in m]
+    del k[1:]
+    k=k[0]
+    k[2].remove('.DS_Store')
 
-for i in _list:
-    if '.' in i:
-        name = i[0:i.index('.')]
-        if i[len(name)+1:len(i)] in _list:
-            sh.move(_path + '/' + i , _path + '/' +i[len(name)+1:len(i)] )
+
+    for el in k[2]:
+
+        f = os.path.splitext(el)[1][1:] 
+        if f in k[1]:
+            os.rename(  os.path.join(k[0],el), os.path.join(k[0],f,el)  )  
 
         else:
-            os.mkdir(_path+'/'+i[len(name)+1:len(i)])
-            sh.move(_path + '/' + i , _path + '/' +i[len(name)+1:len(i)] )
- 
-            
+            os.mkdir(  os.path.join( k[0], f)  )
+            os.rename(  os.path.join(k[0],el),  os.path.join(k[0],f,el)  )
 
-
-
+sort(a)
