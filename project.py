@@ -1,27 +1,51 @@
 import os
 
+path='/Users/K/Documents/pr.directory'
 
-a='/Users/K/Documents/pr.directory'
 
-def sort(path):
+def fsort(inputStr):
+     if '.' in inputStr:
+        return 'a'
+     else:
+         return('b')
+        
+        
+
+
+def f(path):
+
+    l = os.listdir(path)
+    l.sort(key=fsort)
     
-    m=os.walk(path)
+    if '.DS_Store' in l:
+        l.remove('.DS_Store')
+
+        
+
+    if l!=0:
+        
+        for i in l:
+            k=os.path.splitext(i)
+
+            if k[1]=='':
+                f(os.path.join(path,k[0]) )
+
+            else:
+                g=k[1][1:]
+
+                if g in l:
+                    os.rename(  os.path.join(path,i), os.path.join(path, g,i)  )
+                    
+                else:
+                    os.mkdir(  os.path.join(path,g )  )
+                    os.rename(  os.path.join(path, i) , os.path.join(path, g,i) )
+
+    else:
+        return()
+    
 
 
-    k=[d for d in m]
-    del k[1:]
-    k=k[0]
-    k[2].remove('.DS_Store')
 
 
-    for el in k[2]:
+f(path)
 
-        f = os.path.splitext(el)[1][1:] 
-        if f in k[1]:
-            os.rename(  os.path.join(k[0],el), os.path.join(k[0],f,el)  )  
-
-        else:
-            os.mkdir(  os.path.join( k[0], f)  )
-            os.rename(  os.path.join(k[0],el),  os.path.join(k[0],f,el)  )
-
-sort(a)
