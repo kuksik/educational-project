@@ -28,18 +28,18 @@ def sort_tree(path_):
             break
  
 
-    if s==1:
+    if s == 1:
         for i in l:   
-            g=os.path.splitext(i)[1][1:]
+            g = os.path.splitext(i)[1][1:]
 
             if g != '':
                 if g in l:
-                    os.rename(os.path.join(path_,i), os.path.join(path_,g,i))
+                    os.rename(os.path.join(path_, i), os.path.join(path_, g, i))
                 else:
-                    os.renames(os.path.join(path_, i), os.path.join(path_,g,i))                        
+                    os.renames(os.path.join(path_, i), os.path.join(path_, g, i))                        
 
             else:
-                sort_tree(os.path.join(path_,i))
+                sort_tree(os.path.join(path_, i))
                         
 
 
