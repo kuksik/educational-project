@@ -14,17 +14,17 @@ def sort_list(inputStr):
         return('b')
         
 
-def sort_tree(path):
+def sort_tree(path_):
 
     l = os.listdir(path_)
-    l.sort(key=sortlist)
+    l.sort(key=sort_list)
     
     if '.DS_Store' in l: l.remove('.DS_Store')
     
     # To check whether need to sort directory.
     s = 0
     for i in l:
-        if os.path.splitext(i)[1][1:] != os.path.split(path)[1]:
+        if os.path.splitext(i)[1][1:] != os.path.split(path_)[1]:
             s = 1
             break
  
@@ -35,13 +35,13 @@ def sort_tree(path):
 
             if g != '':
                 if g in l:
-                    os.rename(os.path.join(path,i), os.path.join(path,g,i))
+                    os.rename(os.path.join(path_,i), os.path.join(path_,g,i))
             else:
-                os.renames(os.path.join(path, i) , os.path.join(path,g,i))                        
+                os.renames(os.path.join(path_, i) , os.path.join(path_,g,i))                        
     else:
-        f(os.path.join(path,i))
+        f(os.path.join(path_,i))
 
                         
 
-sort_tree(path)
+sort_tree(path_)
 
