@@ -2,46 +2,44 @@
 import os
 
 
-def sort_list(inputStr):
-# Sorting the list: 1)files, 2)directories.
-
-    if '.' in inputStr:
-        return 'a'
-    else:
-        return('b')
-        
-
 def sort_tree(path_):
 
-    l = os.listdir(path_)
-    l.sort(key=sort_list)
+    list_dir = os.listdir(path_)
+
+    # Sort the list: [files, directories].
+    for el in list_dir:
+        if '.' in  el: 
+            list_dir.insert(0, list_dir.pop(list_dir.index(el)))
     
-    # if '.DS_Store' in l: l.remove('.DS_Store')
-    # if '.localized' in l: l.remove('.localized')
+    if '.DS_Store' in list_dir: list_dir.remove('.DS_Store')
+    if '.localized' in list_dir: list_dir.remove('.localized')
     
 
     # To check whether need to sort directory.
     s = 0
-    for i in l:
-        if os.path.splitext(i)[1][1:] != os.path.split(path_)[1]:
+    for el in list_dir:
+        if  os.path.splitext(el)[1][1:] != os.path.split(path_)[1]:
             s = 1
             break
  
-
+    # sort the directory
     if s == 1:
-        for i in l:   
-            g = os.path.splitext(i)[1][1:]
+        for el in list_dir:   
 
-            if g != '':
-                if g in l:
-                    os.rename(os.path.join(path_, i), os.path.join(path_, g, i))
+            if len(el.split('.')) == 2:
+                file_ext = el.split('.')[1]
+                
+                if file_ext in list_dir:
+                    os.rename(os.path.join(path_, el), os.path.join(path_, \
+                                                               file_ext, el))
                 else:
-                    os.renames(os.path.join(path_, i), os.path.join(path_, g, i))                        
+                    os.renames(os.path.join(path_, el), os.path.join(path_, \
+                                                                file_ext, el))                        
 
             else:
-                sort_tree(os.path.join(path_, i))
+                sort_tree(os.path.join(path_, el))
                         
 
 
-sort_tree('/Users/K/Downloads/')
+
 
