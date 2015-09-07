@@ -11,8 +11,10 @@ def sort_tree(path_):
         if '.' in  el: 
             list_dir.insert(0, list_dir.pop(list_dir.index(el)))
     
-    if '.DS_Store' in list_dir: list_dir.remove('.DS_Store')
-    if '.localized' in list_dir: list_dir.remove('.localized')
+    if '.DS_Store' in list_dir:
+        list_dir.remove('.DS_Store')
+    if '.localized' in list_dir:
+        list_dir.remove('.localized')
     
 
     # To check whether need to sort directory.
