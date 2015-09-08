@@ -2,41 +2,54 @@ import socket
 
 import os
 
-import sorttree
-
-import os
-
-import sys
 
 host = '127.0.0.1'
 port = 9091
+drctr_path = "/Users/K/Documents/exp"
 
+    
 sock = socket.socket()
 sock.connect((host, port))
 
-file_size = sock.recv(10)
-sock.send(b'the file size has received\n')
+list_dir = os.listdir(drctr_path)
+
+if '.DS_Store' in list_dir:
+    list_dir.remove('.DS_Store')
+
+sock.send(str(len(list_dir)).encode('utf-8'))
+sock.recv(51)
 
 
-file_name = sock.recv(20)
-print(file_name.decode("utf-8"))
-sock.send(b'the file name has received\n')
 
-path = os.path.join('/Users/K/Documents/project', file_name.decode("utf-8"))
-file_data = sock.recv(int(file_size))
-file = open(path, 'w')
-file.write(file_data.decode("utf-8"))
+for el in list_dir:
 
-#sock.sendfile('/Users/K/Documents/zada4ky.py')
+    el_path = os.path.join(drctr_path, el)
 
-#data = sock.recv(10)
+    if len(el.split('.')) == 2:
 
-#file = open(/Users/K/Documents/zada4ky.py)
+        sock.send(b'file')
 
-#udata = data.decode("utf-8")
-#print(udata)
+            
+        file_size = os.path.getsize(el_path) 
+        sock.send(str(file_size).encode('utf-8'))
+        sock.recv(75)
 
-file.close()
+        file_name = os.path.basename(el_path)
+        sock.send(str(file_name).encode('utf-8'))
+        sock.recv(75)
+
+        file = open(el_path)
+        file_data = file.read()
+        sock.send(file_data.encode('utf-8'))
+
+        file.close
+    
+
+    else:
+        sock.send(b'drct')
+        sock.send(str(el).encode('utf-8'))
+        sock.recv(81)
+
 
 sock.close()
 
