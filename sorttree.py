@@ -5,7 +5,6 @@ import socket
 
 
 
-
 def sort_tree(path_):
 
     list_dir = os.listdir(path_)
@@ -47,9 +46,8 @@ def sort_tree(path_):
                         
 
 
-
 def client_send(path_, sock):
-
+# send file to server
     list_dir = os.listdir(path_)
 
     if '.DS_Store' in list_dir:
@@ -98,6 +96,7 @@ def client_send(path_, sock):
 
 
 def server_recv(path_, conn):
+# recive file from client
 
     list_dir_len = conn.recv(10)
     list_dir_len = int(list_dir_len.decode('utf-8'))
