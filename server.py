@@ -7,33 +7,39 @@ from sorttree import server_recv
 from sorttree import sort_tree
 
 
-print('enter ip server')
-host = input()
-# host = '127.0.0.1'
+# print('enter ip server')
+# host = input()
+host = '127.0.0.1'
 
-print('enter port number')
-port = int(input())
-# port = 9091
+# print('enter port number')
+# port = int(input())
+port = 9091
 
-print('enter the path to the folder in which the files will be saved')
-path_save = input()
-# path_save = "/Users/K/Documents/server"
+# print('enter the path to the folder in which the files will be saved')
+# drctr_path_ = input()
+drctr_path = "/Users/K/Documents/server"
 
-
+# open socket
 sock = socket.socket()
 sock.bind((host, port))
 sock.listen(1)
 conn, addr = sock.accept()
 
+# recieves folder name
+drctr_name = conn.recv(20)
+drctr_name = str(drctr_name.decode("utf-8"))
+conn.send(b'ok')
 
-server_recv(path_save, conn)
+path_sort = os.path.join(drctr_path, drctr_name)
 
-        
+# function recieves diriectory form client and saves
+server_recv(drctr_path, conn)
+
 sock.close()
 conn.close()
 
-
-sort_tree(path_save)
+# function sorts recived files
+sort_tree(path_sort)
 
 
 

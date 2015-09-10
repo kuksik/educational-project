@@ -46,16 +46,23 @@ def sort_tree(path_):
                         
 
 
+#this function sends directory to server
 def client_send(path_, sock):
-# send file to server
+
+    # sends to server folder name
+    sock.send(str(os.path.basename(path_)).encode('utf-8'))
+    sock.recv(51)
+    
+
     list_dir = os.listdir(path_)
 
+    # deletes system files    
     if '.DS_Store' in list_dir:
         list_dir.remove('.DS_Store')
     if '.localized' in list_dir:
         list_dir.remove('.localized')
-    
-
+        
+    # sends to server a number of elements which will send
     sock.send(str(len(list_dir)).encode('utf-8'))
     sock.recv(51)
 
@@ -63,77 +70,93 @@ def client_send(path_, sock):
     for el in list_dir:
 
         path_el = os.path.join(path_, el)
-        
+
+        # file
         if len(el.split('.')) == 2:
 
             sock.send(b'file')
             sock.recv(51)
 
-            file_name = os.path.basename(path_el)
-            sock.send(str(file_name).encode('utf-8'))
-            sock.recv(51)
-            
-            file_size = os.path.getsize(path_el) 
-            sock.send(str(file_size).encode('utf-8'))
+            # sends file name
+            fl_name = os.path.basename(path_el)
+            sock.send(str(fl_name).encode('utf-8'))
             sock.recv(51)
 
-            file = open(path_el)
-            file_data = file.read()
-            file.close
-        
-            sock.send(file_data.encode('utf-8'))
+            # sends file size
+            fl_size = os.path.getsize(path_el) 
+            sock.send(str(fl_size).encode('utf-8'))
             sock.recv(51)
-    
+
+            # opens and sends file
+            fl = open(path_el)
+            fl_data = fl.read()
+            fl.close
+        
+            sock.send(fl_data.encode('utf-8'))
+            sock.recv(51)
+
+        # folder
         else:
+
             sock.send(b'drct')
             sock.recv(51)
-    
-            sock.send(str(el).encode('utf-8'))
-            sock.recv(51)
 
+            # for folder calls this function again  
             client_send(os.path.join(path_, el), sock)
 
 
 
-def server_recv(path_, conn):
-# recive file from client
 
+# function receives directory from client
+def server_recv(path_, conn):
+
+    # recieves folder name
+    drctr_name = conn.recv(20)
+    drctr_name = str(drctr_name.decode("utf-8"))
+    conn.send(b'ok')
+
+    # creates new folder
+    path_save = os.path.join(path_, drctr_name)
+    os.mkdir(path_save)
+
+    # number of elements which will send client
     list_dir_len = conn.recv(10)
     list_dir_len = int(list_dir_len.decode('utf-8'))
     conn.send(b"ok")
 
-
+    
     for el in range(list_dir_len):
 
+        # file or folder
         file_or_drctr = conn.recv(53)
         file_or_drctr.decode('utf-8')
         conn.send(b'ok')
-    
-    
+
+        # file    
         if file_or_drctr == "file":
-    
-            file_name = conn.recv(30)
-            file_name = str(file_name.decode('utf-8'))
+
+            # receives file name
+            fl_name = conn.recv(30)
+            fl_name = str(fl_name.decode('utf-8'))
             conn.send(b'ok') 
-    
-            file_size = conn.recv(10)
-            file_size = int(file_size.decode('utf-8'))
+
+            # receives file size
+            fl_size = conn.recv(10)
+            fl_size = int(fl_size.decode('utf-8'))
             conn.send(b'ok')
-                           
-            path_save = os.path.join(path_, file_name)
-            file_data = conn.recv(file_size)
+
+            # receives and saves file                
+            fl_path_save = os.path.join(path_save, fl_name)
+            fl_data = conn.recv(fl_size)
             conn.send(b'ok')
              
-            file = open(path_save, 'w')
-            file.write(file_data.decode('utf-8'))
-            file.close()
-        
+            fl = open(fl_path_save, 'w')
+            fl.write(fl_data.decode('utf-8'))
+            fl.close()
+
+        # folder        
         else:
-            drctr_name = conn.recv(20)
-            drctr_name = str(drctr_name.decode("utf-8"))
-            conn.send(b'ok')
-        
-            path_save = os.path.join(path_, drctr_name)
-            os.mkdir(path_save)
+
+            # calls this function again
             server_recv(path_save, conn)
     
